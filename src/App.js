@@ -1,10 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
-import Header from './Header'
-import SignUpForm from './SignUpForm';
-import LoginForm from './LoginForm'
-import StringCalc from './StringCalc'
-import PrivateRoute from './PrivateRoute';
+import Routes from './routes'
+
+
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 
 const headerStyle = {
@@ -15,7 +13,6 @@ const headerStyle = {
 
 function App() {
   const [user, setUser] = useState({})
-  const [form, setForm] = useState("")
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -28,7 +25,6 @@ function App() {
       .then(resp => resp.json())
       .then(data => {
         setUser(data)
-        // console.log(data)
       })
     }
   }, [])
@@ -37,11 +33,10 @@ function App() {
     setUser(user)
   }
 
-  const handleFormSwitch = (input) => {
-    setForm(input)
+  const Logout = () => {
+    localStorage.removeItem("token")
+    setUser({})
   }
-
-  console.log(user)
 
   return (
     <div className="App">
@@ -49,25 +44,32 @@ function App() {
           <div>
             <div style={headerStyle}>
               <ul>
-                <li>
-                  <Link className="ui button" to="/login">Log in</Link>
-                </li>
-                <li>
-                  <Link className="ui button" to="/signup">Sign up</Link>
-                </li>
-                <li>
-                  <Link className="ui button" to="/string_calculation">String Calc</Link>
-                </li>
+                {Object.keys(user).length === 0 ? 
+                <React.Fragment>
+                  <li>
+                    <Link className="ui button" to="/login">Log in</Link>
+                  </li>
+                  <li>
+                    <Link className="ui button" to="/signup">Sign up</Link>
+                  </li>
+                </React.Fragment>
+                :
+                <React.Fragment>
+                  <li>
+                    <button class="ui button" onClick={Logout}>Log out</button>
+                  </li>
+                  <li>
+                    <Link className="ui button" to="/reset_password">Reset password</Link>
+                  </li>
+                  <li>
+                    <Link className="ui button" to="/string_calculation">String Calc</Link>
+                  </li>
+                </React.Fragment>
+                }
               </ul>
             </div>
             <Switch>
-              <Route path="/login">
-                <LoginForm handleLogin={handleLogin}/>
-              </Route>
-              <Route path="/signup">
-                <SignUpForm handleLogin={handleLogin}/>
-              </Route>
-              <PrivateRoute path="/string_calculation" component={StringCalc} />
+              <Routes user={user} handleLogin={handleLogin} />
             </Switch>
           </div>
         </Router>

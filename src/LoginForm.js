@@ -3,6 +3,7 @@ import React, {useState} from 'react'
 function LoginForm(props){
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
 
     const handleUsernameChange = (evt) => {
         setUsername(evt.target.value)
@@ -27,11 +28,15 @@ function LoginForm(props){
         })
         .then(resp => resp.json())
         .then(data => {
-            localStorage.setItem("token", data.jwt)
-            props.handleLogin(data.user)
+            if(data.failure)
+            {
+                setError(data.failure)
+            } else {
+                localStorage.setItem("token", data.jwt)
+                props.handleLogin(data.user)
+                setError('')
+            }
         })
-        setUsername("")
-        setPassword("")
     }
     const formDivStyle = {
         margin: "auto",
@@ -43,6 +48,12 @@ function LoginForm(props){
             <div style={formDivStyle}>
             <h1>Log In</h1>
             <form class="ui form" onSubmit={handleSubmit}>
+                {error ? 
+                    <div class="ui ignored negative message">
+                        {error}
+                    </div>
+                    : 
+                    ''}
                 <div class="field">
                     <label>Username</label>
                     <input value={username} onChange={handleUsernameChange} type="text" placeholder="username"/>
