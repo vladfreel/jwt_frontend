@@ -4,6 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import SignUpForm from './SignUpForm';
 import LoginForm from './LoginForm'
 import StringCalc from './StringCalc'
+import Calculations from './Calculations'
 import ResetPass from './ResetPass';
 
 export default function Routes({ user: user, handleLogin: handleLogin }) {
@@ -28,7 +29,10 @@ export default function Routes({ user: user, handleLogin: handleLogin }) {
         <ResetPass/>
       </Route>
       <Route path="/string_calculation" component={StringCalc} >
-        <StringCalc />
+        <StringCalc user={user} />
+      </Route>
+      <Route path="/calculations" component={Calculations} >
+        <Calculations user={user} />
       </Route>
     </Switch>
   );

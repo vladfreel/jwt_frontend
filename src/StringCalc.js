@@ -1,9 +1,11 @@
-import React, {useState} from 'react'
+import React, {useState, useCallback} from 'react'
 
 function StringCalc(props){
+
     const [firstString, setFirstString] = useState("")
     const [secondString, setSecondString] = useState("")
-    const [res, setRes] = useState("")
+    const [condition, setCondition] = useState("")
+    const [result, setResult] = useState([])
 
     const handleFirstStringChange = (evt) => {
         setFirstString(evt.target.value)
@@ -13,7 +15,7 @@ function StringCalc(props){
         setSecondString(evt.target.value)
     }
 
-    const handleSubmit = (evt) => {
+    const handleSubmit = useCallback((evt) => {
         evt.preventDefault()
         fetch(`http://localhost:3000/string_calculation`, {
             method: "POST",
@@ -23,18 +25,23 @@ function StringCalc(props){
             },
             body: JSON.stringify({
                 firstString,
-                secondString
+                secondString,
+                user_id: props.user.id
             })
         })
-        .then(resp => console.log(resp.json()))
-        setFirstString("")
-        setSecondString("")
-    }
+        .then(resp => resp.json())
+        .then(data => {
+            setCondition(data.cond)
+            setResult(data.res)
+        })
+    }, [setCondition, setResult, props.user.id, firstString, secondString])
+
     const formDivStyle = {
         margin: "auto",
         padding: "20px",
         width: "80%"
     }
+    
     return(
         <div>
             <div style={formDivStyle}>
@@ -49,7 +56,10 @@ function StringCalc(props){
                     <input value={secondString} onChange={handleSecondStringChange} type="text" placeholder="second string"/>
                 </div>
                 <div class="field">
-                  {res}
+                    {condition}
+                    <br/>
+                    <br/>
+                    <div dangerouslySetInnerHTML={{ __html: result }} />
                 </div>
                 <button class="ui button" type="submit">Submit</button>
             </form>

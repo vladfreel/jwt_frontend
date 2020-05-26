@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 
 const headerStyle = {
   background: "black",
-  height: "15vh",
+  height: "16vh",
   // lineHeight: "15vh"
 }
 
@@ -63,6 +63,9 @@ function App() {
                   </li>
                   <li>
                     <Link className="ui button" to="/string_calculation">String Calc</Link>
+                  </li>
+                  <li>
+                    <Link className="ui button" to="/calculations">Calculations</Link>
                   </li>
                 </React.Fragment>
                 }
